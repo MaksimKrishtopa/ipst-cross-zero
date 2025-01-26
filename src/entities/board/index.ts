@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { IWinner } from "@/shared/interfaces";
 
 const useBoardUseCase = () => {
-  const { board, setWinner } = useGameContext();
+  const { board, setWinner, moveCount} = useGameContext();
 
   const checkWinner = (): IWinner => {
     const winningCombinations = [
@@ -33,13 +33,19 @@ const useBoardUseCase = () => {
     return null;
   };
 
+  const checkDraw = (): boolean => {
+    return moveCount === 9 && !checkWinner();
+  };
+
   useEffect(() => {
     const winner = checkWinner();
     if (winner) {
       console.log("Победитель:", winner);
       setWinner(winner);
+    } else if (checkDraw()) {
+      console.log("Игра окончена! Ничья!");
     }
-  }, [board]);
+  }, [board, moveCount]);
 };
 
 export {

@@ -1,34 +1,26 @@
-import { useGameContext } from "@/shared/store";
-import { ICell } from "@/shared/interfaces";
+import {useGameContext} from "@/shared/store";
+import {ICell} from "@/shared/interfaces";
 
 const useCellUseCase = () => {
-  const { board, setBoard, currentPlayer, setCurrentPlayer, winner } = useGameContext();
+	const {board, setBoard, currentPlayer, setCurrentPlayer, winner, moveCount, setMoveCount} = useGameContext();
 
-  const handleCellClick = (cell: ICell): void => {
-    if (winner) {
-      console.log("Игра завершена! Победитель:", winner);
-      return;
-    }
+	const handleCellClick = (cell: ICell): void => {
+		if (winner) return;
+		if (cell.player) return;
 
-    if (cell.player) {
-      console.log("Эта ячейка уже занята");
-      return;
-    }
+		const updatedBoard = board.map((boardCell) =>
+			boardCell.id === cell.id ? {...boardCell, player: currentPlayer} : boardCell
+		);
+		setBoard(updatedBoard);
 
-    const updatedBoard = board.map((boardCell) =>
-      boardCell.id === cell.id ? { ...boardCell, player: currentPlayer } : boardCell
-    );
+		setMoveCount(moveCount + 1);
 
-    setBoard(updatedBoard);
+		setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
+	};
 
-    setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
-  };
-
-  return {
-    handleCellClick,
-  };
+	return {
+		handleCellClick,
+	};
 };
 
-export {
-  useCellUseCase,
-};
+export {useCellUseCase};
